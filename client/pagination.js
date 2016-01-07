@@ -10,6 +10,9 @@ var Pagination = (function () {
             {
                 page: 1,
                 perPage: 10,
+                router: true,
+                routename: "pagination",
+                routeparams: "page",
                 filters: {},
                 fields: {},
                 sort: { _id: 1 }
@@ -23,13 +26,26 @@ var Pagination = (function () {
         });
 
         if (!this.currentPage()) {
-            this.currentPage(settings.page);
+            var pageparams = new Function('return Router.current().params.' + settings.routeparams + ';'); //Return a dynamic Route Params Name
+            if(settings.router && pageparams()) { //Check if using Router and existing Page Number
+                this.currentPage(pageparams());
+            } else {
+                this.currentPage(settings.page);
+            }
         }
 
         if (!this.perPage()) {
             this.perPage(settings.perPage);
         }
-
+        
+        if (!this.router()) {
+            this.router(settings.router);
+        }
+        
+        if (!this.routename()) {
+            this.routename(settings.routename);
+        }
+        
         if (!this.filters()) {
             this.filters(settings.filters);
         }
@@ -66,7 +82,27 @@ var Pagination = (function () {
             return this.settings.get("perPage");
         }
     };
-
+    
+    Pagination.prototype.router = function (router) {
+        if (arguments.length === 1) {
+            if (this.settings.get("router") !== router) {
+                this.settings.set("router", router);
+            }
+        } else {
+            return this.settings.get("router");
+        }
+    };
+    
+    Pagination.prototype.routename = function (routename) {
+        if (arguments.length === 1) {
+            if (this.settings.get("routename") !== routename) {
+                this.settings.set("routename", routename);
+            }
+        } else {
+            return this.settings.get("routename");
+        }
+    };
+    
     Pagination.prototype.filters = function (filters) {
         if (arguments.length === 1) {
             filters = !_.isEmpty(filters) ? filters : {};
