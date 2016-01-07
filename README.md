@@ -45,6 +45,15 @@ In your template file (e.g. client/views/mylist.html):
 	</div>
 </template>
 ```
+
+If you want to use with Iron-router (currently with Blaze Template only), in your router file (e.g client/router.js):
+```js
+Router.route('/page/:page', {
+    name: 'pagination',
+    template: 'myList',
+});
+```
+
 **[kurounin:pagination-blaze](https://atmospherejs.com/kurounin/pagination-blaze) package is needed for paginator**
 
 
@@ -52,6 +61,7 @@ In your template javascript file (e.g. client/scripts/mylist.js):
 ```js
 Template.myList.created = function () {
 	this.pagination = new Meteor.Pagination(MyCollection, {
+        router: true, //Set to false if not using Iron-router
         sort: {
             _id: -1
         }
